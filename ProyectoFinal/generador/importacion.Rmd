@@ -1,0 +1,11 @@
+---
+title: "Importacion de datos"
+output: html_notebook
+---
+
+##Descarga del archivo forestfires.csv de UCI Datasets
+```{r}
+download.file("https://archive.ics.uci.edu/ml/machine-learning-databases/forest-fires/forestfires.csv", destfile = "/home/rstudio/ProyectoFinal/dataset/forestfires.csv")
+```
+
+

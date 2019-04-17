@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1529872110256.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "578829BD",
+    "lastKnownWriteTime" : 1529876787,
+    "last_content_update" : 1529876787722,
+    "path" : "~/ProyectoFinal/procesamiento/importacion.R",
+    "project_path" : "procesamiento/importacion.R",
+    "properties" : {
+        "cursorPosition" : "3,16",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

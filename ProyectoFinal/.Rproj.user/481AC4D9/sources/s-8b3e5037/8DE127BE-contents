@@ -1,0 +1,20 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+#install.packages("readxl") #XSLX,XLS
+library("readxl")
+```
+##Descargar archivo xlsx de UCI 
+```{r}
+temp <- tempfile()
+download.file("https://archive.ics.uci.edu/ml/machine-learning-databases/00360/AirQualityUCI.zip",temp)
+tmp2 <- unzip(zipfile=temp, files = "AirQualityUCI.xlsx", exdir=tempdir())
+data<- read_xlsx(tmp2)
+unlink(temp)
+write.csv(data,"../dataset/AirQualityDataset.csv",row.names = FALSE)
+data
+```
+

@@ -1,0 +1,36 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(wakefield)
+```
+
+#Generador de datos
+```{r}
+dataset <- r_data_frame(
+  n = 100,
+  date_stamp(name = "Date",random = TRUE),
+  hour(x = seq(0, 23, by = 1),name = "Time",random=TRUE),
+  height(min = 0.5,max = 10,mean = 5,sd = 4.5,digits=1,name = "CO(GT)"),
+  height(min = 800,max = 2000,mean = 1100,sd = 200,digits=0,name = "PT08.S1(CO)"),
+  height(min = 20,max = 500,mean = 200,sd = 150,digits=0,name = "NMHC(GT)"),
+  height(min = 1,max = 30,mean = 15,sd = 7,digits=1,name = "C6H6(GT)"),
+  height(min = 600,max = 1000,mean = 800,sd = 100,digits=0,name = "PT08.S2(NMHC)"),
+  height(min = 50,max = 200,mean = 150,sd = 50,digits=0,name = "NOx(GT)"),
+  height(min = 600,max = 1000,mean = 800,sd = 100,digits=0,name = "PT08.S3(NOx)"),
+  height(min = 50,max = 200,mean = 150,sd = 50,digits=0,name = "NO2(GT)"),
+  height(min = 600,max = 1000,mean = 800,sd = 100,digits=0,name = "PT08.S4(NO2)"),
+  height(min = 600,max = 1000,mean = 800,sd = 100,digits=0,name = "PT08.S5(O3)"),
+  height(min = 0.5,max = 10,mean = 5,sd = 4.5,digits=1,name = "T"),
+  height(min = 5.5,max = 60,mean = 30,sd = 20,digits=1,name = "RH"),
+  iq(min = 0.5555,max = 1.1111,mean = 0.8124,sd = 0.2222,digits=1,name = "AH")
+)
+if(file.exists("dataset/dataGenerada.csv")){
+  datafile <- read.csv("dataset/dataGenerada.csv", stringsAsFactors = FALSE,check.names = FALSE)
+  dataset<-rbind(dataset,datafile)
+}
+write.csv(dataset,"dataset/dataGenerada.csv",row.names = FALSE)
+write.csv(data,"dataset/AirQualityDataset.csv",row.names = FALSE)
+dataset
+```

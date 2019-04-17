@@ -1,0 +1,6 @@
+"0","write.csv(data,""dataset/AirQualityDataset.csv"",row.names = FALSE)
+"
+"2","cannot open file 'dataset/AirQualityDataset.csv': No such file or directory"
+"2","Error in file(file, ifelse(append, ""a"", ""w"")) : 
+  cannot open the connection
+"

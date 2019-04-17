@@ -1,0 +1,120 @@
+---
+title: "Transformacion y Exploracion"
+output: html_notebook
+---
+##Carga de Paquetes
+```{r}
+library("dplyr")
+library("ggplot2")
+library("stringr")
+library("lubridate")
+library("tidyr")
+```
+
+##Especificacion del Dataset
+>
+1. X - coordenada espacial del eje x dentro del mapa del parque de Montesinho: 1 to 9 
+2. Y - coordenada espacial del eje y dentro del mapa del parque de Montesinho: 2 to 9 
+3. month - mes del anio: 'jan' to 'dec' 
+4. day - dia de la semana: 'mon' to 'sun' 
+5. FFMC - indice FFMC del sistema FWI: 18.7 to 96.20 
+6. DMC - indice DMC del sistema FWI: 1.1 to 291.3 
+7. DC - indice DC del sistema FWI: 7.9 to 860.6 
+8. ISI - indice ISI del sistema FWI: 0.0 to 56.10 
+9. temp - temperatura en grados Celsius: 2.2 to 33.30 
+10. RH - humedad relativa en %: 15.0 a 100
+11. wind - velocidad del viento en km / h: 0.40 a 9.40 
+12. rain - lluvia exterior en mm / m2: de 0.0 a 6.4 
+13. area - el area quemada del bosque (en ha): 0.00 a 1090.84
+
+###Carga de Datos
+```{r}
+datos<- read.csv("/home/rstudio/ProyectoFinal/dataset/datosLimpios.csv",stringsAsFactors = FALSE,check.names = FALSE)
+datos
+```
+## 1. Promedio de area afectada por incendios
+```{r}
+promAreaAfectada<-function(){
+  x <- datos %>% summarise(promedio=mean(area)) 
+    return(x)
+}
+promAreaAfectada()
+```
+## 2. Area total del bosque que ha sido afectado por los incendios
+```{r}
+promTotalAreaAfectada<-function(){
+  x <- datos %>% summarise(areaAfectada=sum(area)) 
+    return(x)
+}
+promTotalAreaAfectada()
+```
+## 3. Numero de incendios por mes
+```{r}
+numeroIncendiosxMes<-function(mesP){
+  x <- datos %>% filter(str_detect(month,mesP)) %>% group_by(month) %>% summarise(cantidad=n()) 
+    return(x)
+}
+numeroIncendiosxMes("")
+```
+
+## 4. Promedio de temperatura de los incendios por mes
+```{r}
+temperaturaxMes<-function(mesP){
+  x <- datos %>% filter(str_detect(month,mesP)) %>% group_by(month) %>% summarise(temperatura = mean(temp))
+    return(x)
+}
+temperaturaxMes("")
+```
+## 5. Las 5 primeras coordenadas que han presentado mas incendios
+```{r}
+Top5Coordenadas<-function(){
+  x <- datos %>% group_by(X,Y) %>% summarise(cantidad = n()) %>% arrange(desc(cantidad)) %>% head(5)
+    return(x)
+}
+Top5Coordenadas()
+```
+## 6. Los 10 incendios mas grandes (ha)
+```{r}
+Top10Incendios<-function(){
+  x <- datos %>% select(c(X,Y,month,RH,area))  %>% arrange(desc(area)) %>% head(10)
+    return(x)
+}
+Top10Incendios()
+```
+## 7. Mes en el que se presento mayor cantidad de incendios
+```{r}
+mesMayorIncendio<-function(){
+  x <- datos %>% group_by(month) %>% summarise(cantidad=n()) %>% arrange(desc(cantidad)) %>% head(1)
+    return(x)
+}
+mesMayorIncendio()
+```
+## 8. Meses en los que se encuentran el top 10 de areas afectadas
+```{r}
+MesesTop10Incendios<-function(){
+    x <- Top10Incendios() %>% group_by(month) %>% summarise(cantidad=n()) %>% arrange(desc(cantidad))
+    return(x)
+}
+MesesTop10Incendios()
+```
+## 9. Zonas cuya humedad relativa sea mayor a la media donde el area afectada este en el Top10
+```{r}
+ZonasHumedasTop10<-function(){
+    x <- Top10Incendios() %>% select(c(X,Y,RH)) %>% filter(RH>mean(RH))
+    return(x)
+}
+ZonasHumedasTop10()
+```
+## 10. 2 temperaturas mas altas por mes
+```{r}
+top2TemperaturaxMes<-function(){
+  x <- datos %>% group_by(month,temp) %>% summarise(cantidad=n()) %>% top_n(2, temp) %>% arrange(desc(cantidad))
+  return(x)
+}
+top2TemperaturaxMes()
+```
+## Exploracion de datos
+```{r}
+plot(datos$DMC,datos$DC)
+plot(datos$temp,datos$RH)
+```

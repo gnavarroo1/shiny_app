@@ -1,0 +1,13 @@
+#Cargar la data
+install.packages("readXL") #XSLX,XLS
+library("readxl")
+
+temp <- tempfile()
+download.file("https://archive.ics.uci.edu/ml/machine-learning-databases/00360/AirQualityUCI.zip",temp)
+data <- read.csv2(unz(temp, "AirQualityUCI.csv"))
+unzip <- unz(temp, "AirQualityUCI.xlsx")]
+unzip
+
+typeof(unzip)
+unlink(temp)
+write.csv(data,"dataset/AirQualityDataset.csv",row.names = FALSE)

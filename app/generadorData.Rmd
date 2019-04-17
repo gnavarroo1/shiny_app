@@ -1,0 +1,39 @@
+---
+title: "Generacion de datos"
+output: html_notebook
+---
+```{r}
+library(wakefield)
+library(markdown)
+```
+
+#Generador de datos
+```{r}
+meses <- c("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec")
+dias <- c("sun","mon","tue","wed","thu","fri","sat")
+mesesS<- sample(meses,50,replace = TRUE)
+diasS<- sample(dias,50,replace = TRUE)
+dataset <- r_data_frame(
+  n = 50,
+  height(min = 1,max = 9,digits=0,name = "X"),
+  height(min = 1,max = 9,digits=0,name = "Y"),
+  height(min = 18.7,max = 96.20,digits=1,name = "FFMC"),
+  height(min = 1.1,max = 291.3,digits=1,name = "DMC"),
+  height(min = 7.9,max = 860.3,digits=1,name = "DC"),
+  height(min = 0.0,max = 56.10,digits=1,name = "ISI"),
+  height(min = 2.2,max = 33.30,digits=1,name = "temp"),
+  height(min = 15.0,max = 100,digits=1,name = "RH"),
+  height(min = 0.40,max = 9.40,digits=1,name = "wind"),
+  height(min = 0.0,max = 6.40,digits=1,name = "rain"),
+  height(min = 0.0,max = 1090.84,digits=1,name = "area")
+)
+
+dataset$month = mesesS
+dataset$day = diasS
+if(file.exists("/home/rstudio/ProyectoFinal/dataset/dataGenerada.csv")){
+  datafile <- read.csv("/home/rstudio/ProyectoFinal/dataset/dataGenerada.csv", stringsAsFactors = FALSE,check.names = FALSE)
+  dataset<-rbind(dataset,datafile)
+}
+write.csv(dataset,"/home/rstudio/ProyectoFinal/dataset/dataGenerada.csv",row.names = FALSE)
+dataset
+```

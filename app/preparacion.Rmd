@@ -1,0 +1,76 @@
+---
+title: "Preparacion de datos"
+output: html_notebook
+---
+##Carga de Paquetes
+```{r}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(caret)
+```
+
+##Especificacion del Dataset
+>
+1. X - coordenada espacial del eje x dentro del mapa del parque de Montesinho: 1 to 9 
+2. Y - coordenada espacial del eje y dentro del mapa del parque de Montesinho: 2 to 9 
+3. month - mes del anio: 'jan' to 'dec' 
+4. day - dia de la semana: 'mon' to 'sun' 
+5. FFMC - indice FFMC del sistema FWI: 18.7 to 96.20 
+6. DMC - indice DMC del sistema FWI: 1.1 to 291.3 
+7. DC - indice DC del sistema FWI: 7.9 to 860.6 
+8. ISI - indice ISI del sistema FWI: 0.0 to 56.10 
+9. temp - temperatura en grados Celsius: 2.2 to 33.30 
+10. RH - humedad relativa en %: 15.0 a 100
+11. wind - velocidad del viento en km / h: 0.40 a 9.40 
+12. rain - lluvia exterior en mm / m2: de 0.0 a 6.4 
+13. area - el area quemada del bosque (en ha): 0.00 a 1090.84
+
+###Carga de Datos
+```{r}
+datos<- read.csv("/home/rstudio/ProyectoFinal/dataset/forestfires.csv",stringsAsFactors = FALSE,check.names = FALSE)
+datos
+```
+
+###Muestreo
+```{r}
+id_muestreo = sample(1:NROW(datos), NROW(datos)*0.8)
+##dataset de entrenamieno (80%)
+entrenamiento = datos[id_muestreo,]
+entrenamiento
+##dataset de validacion
+validacion=datos[-id_muestreo,]
+```
+
+###Imputacion de datos
+```{r}
+datosInput <- sapply(datos, function(x) ifelse(is.na(x),mean(as.double(x),na.rm = T),x))
+datosInput <- as.data.frame(datosInput)
+datosInput
+```
+##Eliminacion de outliers 
+```{r}
+remove_outliers <- function(x) {
+  qnt <- quantile(x, probs=c(.25, .75), na.rm = TRUE)
+  H <- 1.5 * IQR(x, na.rm = TRUE)
+  y <- x
+  y[x < (qnt[1] - H)] <- NA
+  y[x > (qnt[2] + H)] <- NA
+  y
+}
+remove_outliers2<-function(x){
+  datacol <- as.double(as.character(x))
+  x<- remove_outliers(datacol)
+  x
+}
+datosInput$temp<- remove_outliers2(datosInput$temp)
+datosInput$RH<- remove_outliers2(datosInput$RH)
+datosInput$wind<- remove_outliers2(datosInput$wind)
+datosInput$rain<- remove_outliers2(datosInput$rain)
+datosInput$area<- remove_outliers2(datosInput$area)
+
+datosLimpios = na.omit(datosInput)
+datosLimpios
+write.csv(datosLimpios,"/home/rstudio/ProyectoFinal/dataset/datosLimpios.csv",row.names = FALSE)
+```
+

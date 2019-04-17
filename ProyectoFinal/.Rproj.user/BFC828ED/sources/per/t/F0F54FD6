@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1555330815348.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1579363959",
+    "id" : "F0F54FD6",
+    "lastKnownWriteTime" : 1555331273,
+    "last_content_update" : 1555331273340,
+    "path" : "D:/repositorio/ProyectoFinal_v2/app/app.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "14,14",
+        "scrollLine" : "15"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,87 @@
+---
+title: "Modelo de regresion"
+output: html_notebook
+---
+
+##Carga de Paquetes
+```{r}
+library("dplyr")
+library("ggplot2")
+library("stringr")
+library("lubridate")
+library("tidyr")
+```
+
+##Especificacion del Dataset
+>
+1. X - coordenada espacial del eje x dentro del mapa del parque de Montesinho: 1 to 9 
+2. Y - coordenada espacial del eje y dentro del mapa del parque de Montesinho: 2 to 9 
+3. month - mes del anio: 'jan' to 'dec' 
+4. day - dia de la semana: 'mon' to 'sun' 
+5. FFMC - indice FFMC del sistema FWI: 18.7 to 96.20 
+6. DMC - indice DMC del sistema FWI: 1.1 to 291.3 
+7. DC - indice DC del sistema FWI: 7.9 to 860.6 
+8. ISI - indice ISI del sistema FWI: 0.0 to 56.10 
+9. temp - temperatura en grados Celsius: 2.2 to 33.30 
+10. RH - humedad relativa en %: 15.0 a 100
+11. wind - velocidad del viento en km / h: 0.40 a 9.40 
+12. rain - lluvia exterior en mm / m2: de 0.0 a 6.4 
+13. area - el area quemada del bosque (en ha): 0.00 a 1090.84
+
+###Carga de Datos
+```{r}
+datos<- read.csv("/home/rstudio/ProyectoFinal/dataset/forestfires.csv",stringsAsFactors = FALSE,check.names = FALSE)
+datos
+```
+## Exploracion de datos
+```{r}
+plot(datos,xlim=c(0,100),ylim=c(0,100))
+plot(datos$DMC,datos$DC)
+```
+
+#Regresiones lineales
+```{r}
+x<-datos$DMC
+y<-datos$DC
+dt=data.frame(x,y)
+vx=c(18,30,40,60,80)
+regresion <- function(dt,vx){
+  lista <- NULL
+  x=dt$x
+  y=dt$y
+  sumX=sum(x)
+  sumY=sum(y)
+  prodXY=sum(x*y)
+  promX=mean(x)
+  dt$x2=x^2
+  dt$y2=y^2
+  x2=sum(x^2)
+  y2=sum(y^2)
+  
+  promY<-mean(y)
+  #calculo de la covarianza
+  cov = (prodXY/length(x))-(promX*promY)
+  #calculo de las desviacion estandar x, y
+  dx=sqrt((x2/length(x))-promX^2)
+  dy=sqrt((y2/length(y))-promY^2)
+  #coeficiente de correlacion de Pearson
+  r=cov/(dx*dy)
+  #generando recta regresional
+  vy=promY+(cov/dx^2)*(vx-promX)
+  lista[[1]]<-dt #dt entrenamiento
+  lista[[2]]<-vx #datos de validacion
+  lista[[3]]<-vy #datos predecidos
+  lista[[4]]<-r  #coeficiente de correlacion de Pearson
+  return (lista)
+}
+
+modelo <- lm(DC ~ DMC, data = datos)
+DCs <- predict(modelo,datos) #Valores Predichos
+b0 <- round(modelo$coefficients[1],2)
+b1 <- round(modelo$coefficients[2],2)
+qplot(x = DMC, y = DC,data = datos, 
+      main = "Duff Moisture Code vs Drought Code", xlab = "Duff Moisture Code (DMC)",
+      ylab = "Drought Code (DC)", geom = c("point")) + geom_line(aes(y=DCs), lwd = 1.2, color = 4) +
+  geom_text(x = 100, y = 1000, aes(label = paste("DC^", " = ", b0, " + ", b1, "*","DMC")))
+```
+
